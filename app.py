@@ -23,25 +23,51 @@ if len(selected_subjects) not in [7, 8]:
 else:
     grades = {}
     for sub in selected_subjects:
-        grades[sub] = st.selectbox(f"Choose a grade for {sub}:", list(value_points.keys()), key=sub)
+        selected_grade = st.selectbox(f"Choose a grade for {sub}:", list(value_points.keys()), key=sub)
+        grades[sub]=value_points[selected_grade]
 
-    # Calculate total points for each group
-    group_0= {"MATH": grades.get("MATH", "")}
-    group_i = {"ENG": grades.get("ENG", ""), "KIS": grades.get("KIS", "")}
-    group_ii = {"BIO": grades.get("BIO", ""), "PHY": grades.get("PHY", ""), "CHEM": grades.get("CHEM", "")}
-    group_iii = {"HIST": grades.get("HIST", ""), "CRE": grades.get("CRE", ""), "GEO": grades.get("GEO", "")}
-    group_iv = {"AGRI": grades.get("AGRI", ""), "HSC": grades.get("HSC", ""), "COMPST": grades.get("COMPST", "")}
-    group_v = {"BUS": grades.get("BUS", ""), "FRE": grades.get("FRE", ""), "MUS": grades.get("MUS", "")}
+        # "eng": "10"
+ 
+    group_I = ["MATH","ENG", "KIS"]
+    group_II = ["BIO", "PHY", "CHEM"]
+    group_III = ["HIST", "GEO", "CRE", "IRE", "HRE"]
+    group_IV = ["HSC", "ART", "AGRI", "WDWRK", "METLWK", "COMP ST", "POWER", "ELEC", "D&D"]
+    group_V = ["BUS", "FRE", "MUSIC", "GER", "ARB", "SIGN LANG"]
 
-    # Calculate the total points
-    total_points_0 = max((value_points[grade] for grade in group_0.values() if grade), default=0)
-    total_points_i = max((value_points[grade] for grade in group_i.values() if grade), default=0)
-    total_points_ii = max((value_points[grade] for grade in group_ii.values() if grade), default=0)
-    total_points_iii = max((value_points[grade] for grade in group_iii.values() if grade), default=0)
-    total_points_iv = max((value_points[grade] for grade in group_iv.values() if grade), default=0)
+    # Calculate the total points for each group
+    #weight 1
+    weight_1_sub = max(["ENG", "KIS"], key=lambda sub: grades[sub])  # Corrected line
+    weight_1 = grades[weight_1_sub] 
+    #Drop the lowest subject in group I
+    del grades[weight_1_sub]
+    # weigh 2
+    weight_2_sub = max(["MATH"] + group_II, key=lambda sub: grades[sub])  
+    weight_2 = grades[weight_2_sub] 
+    #Drop weight_2_sub
+    del grades[weight_2_sub]
+    #Weight 3
+    weight_3_sub = max([subj for subj in group_III if subj in grades], key=grades.get)
+    weight_3 = grades[weight_3_sub]
+    #drop weight_3_sub
+    del grades[weight_3_sub]
+    #Weight 4
+    # Combine eligible subjects for Weight 4
+    eligible_weight_4 = list(set(group_II) & set(grades.keys())) + \
+                    list(set(group_III) & set(grades.keys())) + \
+                    list(set(group_IV) & set(grades.keys())) + \
+                    list(set(group_V) & set(grades.keys()))
+    
+    # Find the subject with the highest grade from the eligible subjects
+    weight_4_sub = max(eligible_weight_4, key=lambda sub: grades[sub])
+    weight_4 = grades[weight_4_sub]
+
+    # Calculate the total points for each group
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+
 
     # Grand total
-    total_points_all = total_points_i + total_points_ii + total_points_iii + total_points_0
+    total_points_all = total_points_i
+
 
     # Calculate the cluster points
     result_r = total_points_all / 48
@@ -51,4 +77,21 @@ else:
 
     # Display the calculated cluster points
     st.subheader("Cluster Points are:")
-    st.write(f"Cluster Value: {cluster:.2f}")
+    st.write(f"Cluster values: {cluster:.2f}")
+    st.write(f"Total points: {total_points_i:.2f}")
+
+
+cluster_dictionary = {
+    "cluster_1": {
+        "cluster_name": "Cluster 1",
+        "description": "Law and related courses",
+        "rules": {
+            "priority_subjects": ["English", "History", "Kiswahili"]
+        },
+        "limiters": {
+            "minimum_points": 42,
+            "maximum_points": 48
+        }
+    },
+}
+
