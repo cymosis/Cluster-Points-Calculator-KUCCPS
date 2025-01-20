@@ -26,6 +26,7 @@ with col1:
             selected_grade = st.selectbox(f"Choose a grade for {sub}:", list(value_points.keys()), key=sub)
             grades[sub]=value_points[selected_grade]
         # Make a copy of the grades
+
         grades_1 = grades.copy()
         grades_2 = grades.copy()
         grades_3 = grades.copy()
@@ -37,15 +38,17 @@ with col1:
         grades_9 = grades.copy()
         grades_10 = grades.copy()
         grades_11 = grades.copy()
+        grades_12 = grades.copy()
 
         # get groups
         groups = set_groups()
     # Grand total
 with col2:
     st.subheader("Cluster Points are:")
+    
     cluster_groups_list = [cluster_1(grades, groups), cluster_2(grades_1, groups), cluster_3(grades_2, groups), cluster_4(grades_3, groups),cluster_5(grades_4, groups),
                            cluster_7(grades_6, groups),cluster_8(grades_7, groups),cluster_9(grades_8, groups),cluster_10(grades_9, groups),cluster_11(grades_10, groups),
-                           cluster_12(grades_11, groups)]
+                           cluster_12(grades_11, groups),cluster_13(grades_12, groups)]
    # Iterate through the cluster responses
     for i, total_points_all in enumerate(cluster_groups_list):
         # Extract total points and cluster name from the response
@@ -59,7 +62,7 @@ with col2:
         cluster = (part_1 ** 0.5) * 48
 
         # Display the calculated cluster points and total points
-        st.write(f"{cluster_name}: {total_points_all_value:.2f}")
+        st.write(f"{cluster_name}: {cluster:.2f}")
 
 
 
