@@ -10,8 +10,8 @@ def set_groups():
     return groups
 
 def set_subjects():
-    subjects = ["MATH", "ENG", "KIS", "BIO", "PHY", "CHEM", "HIST", "CRE", "GEO", 
-            "AGRI", "HSC", "COMPST", "BUS", "FRE", "MUS"]
+    subjects = ["MATH", "ENG", "KIS", "BIO", "PHY", "CHEM","GEO", "BUS", "HIST", "CRE", 
+            "AGRI", "HSC", "COMPST",  "FRE", "MUS"]
     
     return subjects
 
