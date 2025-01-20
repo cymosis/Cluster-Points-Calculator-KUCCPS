@@ -1,5 +1,5 @@
 import streamlit as st
-from clusters import cluster_2, cluster_1
+from clusters import *
 from setters import *
 
 # Title of the app
@@ -23,7 +23,7 @@ else:
     for sub in selected_subjects:
         selected_grade = st.selectbox(f"Choose a grade for {sub}:", list(value_points.keys()), key=sub)
         grades[sub]=value_points[selected_grade]
-        
+    # Make a copy of the grades
     grades_1 = grades.copy()
    
     # get groups
