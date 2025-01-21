@@ -227,9 +227,42 @@ def cluster_5(grades, groups):
 
         return response
 
+
+def cluster_6(grades, groups):
+        # Calculate the total points for each group
+        #weight 1
+        weight_1_sub = 'MATH'
+        weight_1 = grades[weight_1_sub] 
+        #Drop the lowest subject in group I
+        del grades[weight_1_sub]
+        # weigh 2
+        # weight_2_sub = max(["MATH"] + groups[1], key=lambda sub: grades[sub])  
+        weight_2_sub = max([subj for subj in ['ENG','MATH']+ grades[1] if subj in grades], key=grades.get)
+        weight_2 = grades[weight_2_sub] 
+        #Drop weight_2_sub
+        del grades[weight_2_sub]
+        #Weight 3
+        weight_3_sub = max([subj for subj in groups[2] if subj in grades], key=grades.get)
+        weight_3 = grades[weight_3_sub]
+        #drop weight_3_sub
+        del grades[weight_3_sub]
+        #Weight 4
+        # Find the subject with the highest grade from the eligible subjects
+        weight_4_sub = max([subj for subj in groups[2] + groups[1] + groups[3] + groups[4] if subj in grades], key=grades.get)
+        weight_4 = grades[weight_4_sub]
+
+        # Calculate the total points for each group
+        total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+
+        response = {'total_points': total_points_i, 'cluster_name': 'Arts(Kiswahili)& Related'}
+
+        return response
+
 def cluster_7(grades, groups):
         # Calculate the total points for each group
         #weight 1
+        if 'PHY' not in grades or 'CHEM' not in grades:
+                return {'message': 'Do not qualify'}
         weight_1 = grades["MATH"] 
         #Drop weight_2_sub
         del grades["MATH"]
@@ -268,6 +301,8 @@ def cluster_7(grades, groups):
 def cluster_8(grades, groups):
         # Calculate the total points for each group
         #weight 1
+        if 'PHY' not in grades:
+                return {'message': 'Do not qualify'}
         weight_1 = grades["MATH"] 
         #Drop weight_2_sub
         del grades["MATH"]
@@ -301,6 +336,8 @@ def cluster_8(grades, groups):
         return response
 
 def cluster_10(grades, groups):
+        if 'BIO' not in grades:
+                return {'message': 'Do not qualify'}
         # Calculate the total points for each group
         #weight 1
         weight_1 = grades["MATH"] 
@@ -397,8 +434,8 @@ def cluster_12(grades, groups):
         return response
 #CHEM ,MAT	A,BIO	or	HSC,ENG/KIS	or	any	GROUP	III	or	a GROUP	IV	or	any	GROUP	V
 def cluster_13(grades, groups):
-    
-        # Calculate the total points for each group
+        subjects_needed = ['CHEM']
+
         #weight 1
         weight_1 = grades["CHEM"]  
         #Drop the lowest subject in group I
@@ -429,95 +466,257 @@ def cluster_13(grades, groups):
         return response
 
 def cluster_14(grades, groups):
-        # Calculate the total points for each group
-        #weight 1
-        weight_1 = grades["CHEM"]  
-        #Drop the lowest subject in group I
-        del grades['CHEM']
-        # weigh 2
-        # weight_2_sub = max(["MATH"] + groups[1], key=lambda sub: grades[sub])  
-        weight_2 = grades["MATH"]  
-        #Drop the lowest subjecHt in group I
-        
-        #Drop weight_2_sub
+    subjects_needed = ['BIO']
+
+
+    weight_1_sub = max([subj for subj in ['BIO', 'GSC'] if subj in grades], key=grades.get, default=None)
+    weight_1 = grades.get(weight_1_sub, 0)
+    # Remove the selected subject for Weight 1
+    if weight_1_sub:
+        del grades[weight_1_sub]
+    # Weight 2: Always 'MATH'
+    weight_2 = grades.get('MATH', 0)
+    # Remove 'MATH' from `grades` if it exists
+    if 'MATH' in grades:
         del grades['MATH']
-        #Weight 3
-        weight_3_sub = max([subj for subj in ['BIO','HSC'] if subj in grades], key=grades.get) 
-        weight_3 = grades[weight_3_sub]
-        #Drop weight_2_sub
+    # Weight 3: Max grade from `groups[1] + groups[2]` (if subjects exist in `grades`)
+    weight_3_sub = max([subj for subj in groups[1] + groups[2] if subj in grades], key=grades.get, default=None)
+    weight_3 = grades.get(weight_3_sub, 0)
+    # Remove the selected subject for Weight 3
+    if weight_3_sub:
         del grades[weight_3_sub]
-        #Weight 4
-        # Find the subject with the highest grade from the eligible subjects
-        LAN=['ENG','KIS']
-        weight_4_sub = max([subj for subj in groups[2] + LAN + groups[3] + groups[4] if subj in grades], key=grades.get)
-        weight_4 = grades[weight_4_sub]
+    
+    # Weight 4: Max grade from `groups[2] + groups[1] + LAN + groups[3] + groups[4]`
+    LAN = ['ENG', 'KIS']
+    weight_4_sub = max([subj for subj in groups[2] + groups[1] + LAN + groups[3] + groups[4] if subj in grades],key=grades.get,default=None)
+    weight_4 = grades.get(weight_4_sub, 0)
+    # Calculate the total points
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+    # Construct the response
+    response = {
+        'total_points': total_points_i,
+        'cluster_name': 'Sports Education, Sports Science, Sports Management & Related'
+    }
+    
+    return response
 
-        # Calculate the total points for each group
-        total_points_i = weight_1 + weight_2 + weight_3 + weight_4
-
-        response = {'total_points': total_points_i, 'cluster_name': 'Interior Design, Fashion Design, Textiles & Related'}
-
-        return response
 
 
 def cluster_15(grades, groups):
-        # Calculate the total points for each group
-        #weight 1
-        weight_1 = grades["CHEM"]  
-        #Drop the lowest subject in group I
-        del grades['CHEM']
-        # weigh 2
-        # weight_2_sub = max(["MATH"] + groups[1], key=lambda sub: grades[sub])  
-        weight_2 = grades["MATH"]  
-        #Drop the lowest subjecHt in group I
-        
-        #Drop weight_2_sub
-        del grades['MATH']
-        #Weight 3
-        weight_3_sub = max([subj for subj in ['BIO','HSC'] if subj in grades], key=grades.get) 
-        weight_3 = grades[weight_3_sub]
-        #Drop weight_2_sub
+    subjects_needed = ['BIO', 'CHEM']
+
+    # Weight 1: Always "BIO"
+    weight_1 = grades.get("BIO", 0)
+    
+    # Remove "BIO" from grades if it exists
+    if "BIO" in grades:
+        del grades["BIO"]
+    
+    # Weight 2: Always "CHEM"
+    weight_2 = grades.get("CHEM", 0)
+    
+    # Remove "CHEM" from grades if it exists
+    if "CHEM" in grades:
+        del grades["CHEM"]
+    
+    # Weight 3: Max grade from ["MATH", "PHY"]
+    weight_3_sub = max([subj for subj in ["MATH", "PHY"] if subj in grades], key=grades.get, default=None)
+    weight_3 = grades.get(weight_3_sub, 0)
+    
+    # Remove the selected subject for Weight 3
+    if weight_3_sub:
         del grades[weight_3_sub]
-        #Weight 4
-        # Find the subject with the highest grade from the eligible subjects
-        LAN=['ENG','KIS']
-        weight_4_sub = max([subj for subj in groups[2] + LAN + groups[3] + groups[4] if subj in grades], key=grades.get)
-        weight_4 = grades[weight_4_sub]
-
-        # Calculate the total points for each group
-        total_points_i = weight_1 + weight_2 + weight_3 + weight_4
-
-        response = {'total_points': total_points_i, 'cluster_name': 'Interior Design, Fashion Design, Textiles & Related'}
-
-        return response
+    
+    # Weight 4: Max grade from eligible subjects in groups[2], LAN, groups[3], and groups[4]
+    LAN = ["ENG", "KIS"]
+    weight_4_sub = max(
+        [subj for subj in groups[2] + LAN + groups[3] + groups[4] if subj in grades],
+        key=grades.get,
+        default=None
+    )
+    weight_4 = grades.get(weight_4_sub, 0)
+    
+    # Calculate the total points
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+    
+    # Construct the response
+    response = {
+        'total_points': total_points_i,
+        'cluster_name': 'Medicine, Nursing, Pharmacy & Related'
+    }
+    
+    return response
 
 def cluster_16(grades, groups):
-        # Calculate the total points for each group
-        #weight 1
-        weight_1 = grades["CHEM"]  
-        #Drop the lowest subject in group I
-        del grades['CHEM']
-        # weigh 2
-        # weight_2_sub = max(["MATH"] + groups[1], key=lambda sub: grades[sub])  
-        weight_2 = grades["MATH"]  
-        #Drop the lowest subjecHt in group I
-        
-        #Drop weight_2_sub
-        del grades['MATH']
-        #Weight 3
-        weight_3_sub = max([subj for subj in ['BIO','HSC'] if subj in grades], key=grades.get) 
-        weight_3 = grades[weight_3_sub]
-        #Drop weight_2_sub
+    subjects_needed = ['HAG']
+
+    
+    # Weight 1: Always "HAG"
+    weight_1 = grades.get("HAG", 0)
+    
+    # Remove "HAG" from grades if it exists
+    if "HAG" in grades:
+        del grades["HAG"]
+    
+    # Weight 2: Max grade from ['ENG', 'KIS']
+    weight_2_sub = max([subj for subj in ['ENG', 'KIS'] if subj in grades], key=grades.get, default=None)
+    weight_2 = grades.get(weight_2_sub, 0)
+    
+    # Remove the selected subject for Weight 2
+    if weight_2_sub:
+        del grades[weight_2_sub]
+    
+    # Weight 3: Max grade from ['MATH'] + groups[1]
+    weight_3_sub = max([subj for subj in ['MATH'] + groups[1] if subj in grades], key=grades.get, default=None)
+    weight_3 = grades.get(weight_3_sub, 0)
+    
+    # Remove the selected subject for Weight 3
+    if weight_3_sub:
         del grades[weight_3_sub]
-        #Weight 4
-        # Find the subject with the highest grade from the eligible subjects
-        LAN=['ENG','KIS']
-        weight_4_sub = max([subj for subj in groups[2] + LAN + groups[3] + groups[4] if subj in grades], key=grades.get)
-        weight_4 = grades[weight_4_sub]
+    
+    # Weight 4: Max grade from groups[2] + groups[1] + groups[3] + groups[4]
+    weight_4_sub = max(
+        [subj for subj in groups[2] + groups[1] + groups[3] + groups[4] if subj in grades],
+        key=grades.get,
+        default=None
+    )
+    weight_4 = grades.get(weight_4_sub, 0)
+    
+    # Calculate the total points
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+    
+    # Construct the response
+    response = {
+        'total_points': total_points_i,
+        'cluster_name': 'Archeology'
+    }
+    
+    return response
 
-        # Calculate the total points for each group
-        total_points_i = weight_1 + weight_2 + weight_3 + weight_4
 
-        response = {'total_points': total_points_i, 'cluster_name': 'Interior Design, Fashion Design, Textiles & Related'}
 
-        return response
+def cluster_17(grades, groups):
+    subjects_needed = ['BIO', 'CHEM']
+
+    
+    # Weight 1: Always "BIO"
+    weight_1 = grades.get("BIO", 0)
+    
+    # Remove "BIO" from grades if it exists
+    if "BIO" in grades:
+        del grades["BIO"]
+    
+    # Weight 2: Always "CHEM"
+    weight_2 = grades.get("CHEM", 0)
+    
+    # Remove "CHEM" from grades if it exists
+    if "CHEM" in grades:
+        del grades["CHEM"]
+    
+    # Weight 3: Max grade from ["MATH", "PHY", "GEO"]
+    weight_3_sub = max([subj for subj in ["MATH", "PHY", "GEO"] if subj in grades], key=grades.get, default=None)
+    weight_3 = grades.get(weight_3_sub, 0)
+    
+    # Remove the selected subject for Weight 3
+    if weight_3_sub:
+        del grades[weight_3_sub]
+    
+    # Weight 4: Max grade from LAN + groups[2] + groups[1] + groups[3] + groups[4]
+    LAN = ["ENG", "KIS"]
+    weight_4_sub = max(
+        [subj for subj in LAN + groups[2] + groups[1] + groups[3] + groups[4] if subj in grades],
+        key=grades.get,
+        default=None
+    )
+    weight_4 = grades.get(weight_4_sub, 0)
+    
+    # Calculate the total points
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+    
+    # Construct the response
+    response = {
+        'total_points': total_points_i,
+        'cluster_name': 'Animal Health, Nutrition, Agriculture and Production'
+    }
+    
+    return response
+
+
+def cluster_18(grades, groups):
+    subjects_needed = ['GEO']
+
+    
+    # Weight 1: Always "GEO"
+    weight_1 = grades.get("GEO", 0)
+    
+    # Remove "GEO" from grades if it exists
+    if "GEO" in grades:
+        del grades["GEO"]
+    
+    # Weight 2: Always "MATH"
+    weight_2 = grades.get("MATH", 0)
+    
+    # Remove "MATH" from grades if it exists
+    if "MATH" in grades:
+        del grades["MATH"]
+    
+    # Weight 3: Max grade from subjects in groups[1]
+    weight_3_sub = max([subj for subj in groups[1] if subj in grades], key=grades.get, default=None)
+    weight_3 = grades.get(weight_3_sub, 0)
+    
+    # Remove the selected subject for Weight 3
+    if weight_3_sub:
+        del grades[weight_3_sub]
+    
+    # Weight 4: Max grade from subjects in groups[2] + groups[1] + groups[3] + groups[4]
+    weight_4_sub = max(
+        [subj for subj in groups[2] + groups[1] + groups[3] + groups[4] if subj in grades],
+        key=grades.get,
+        default=None
+    )
+    weight_4 = grades.get(weight_4_sub, 0)
+    
+    # Calculate the total points
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+    
+    # Construct the response
+    response = {
+        'total_points': total_points_i,
+        'cluster_name': 'Geography, Environmental Science, Natural Resources & Related'
+    }
+    
+    return response
+
+
+def cluster_19(grades, groups):
+    # Calculate the total points for each group
+
+    # Weight 1: Always "ENG"
+    weight_1 = grades["ENG"]  
+    # Drop the "ENG" subject from grades
+    del grades['ENG']
+    
+    # Weight 2: Always "MATH"
+    weight_2 = grades["MATH"]  
+    # Drop the "MATH" subject from grades
+    del grades['MATH']
+    
+    # Weight 3: Max grade from subjects in groups[1] + groups[2]
+    weight_3_sub = max([subj for subj in groups[1] + groups[2] if subj in grades], key=grades.get) 
+    weight_3 = grades[weight_3_sub]
+    # Drop the selected subject for Weight 3
+    del grades[weight_3_sub]
+    
+    # Weight 4: Max grade from subjects in groups[2] + groups[1] + groups[3] + groups[4]
+    weight_4_sub = max([subj for subj in groups[2] + groups[1] + groups[3] + groups[4] if subj in grades], key=grades.get)
+    weight_4 = grades[weight_4_sub]
+    
+    # Calculate the total points for each group
+    total_points_i = weight_1 + weight_2 + weight_3 + weight_4
+
+    # Prepare the response
+    response = {'total_points': total_points_i, 'cluster_name': 'Early Childhood Development, Primary Education & Related'}
+
+    return response
+
+
